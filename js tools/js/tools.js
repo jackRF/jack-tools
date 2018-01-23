@@ -9,7 +9,29 @@ $(document).ready(function(){
 			$("#datatxt2").val(result);
 		}
 	}
-	
+	function doProcess(fn){
+		view.setResult('');
+		var data=view.getData().inputData;
+		if(!data){
+			return;
+		}
+		fn(data,view);
+	}
+	//resultMap 提取 columns or property
+	$("#op-resultMapExtract").click(function(){
+		var resultMapExtractAttr=window.resultMapExtractAttr||"column";
+		doProcess(function(data,view){
+			var domParser = new  DOMParser();
+            var xmlDoc = domParser.parseFromString(data, 'text/xml');
+			var rootEl=xmlDoc.getRootNode();
+			var columns=[];
+			$.each(rootEl.firstElementChild.children,function(i,item){
+				columns.push(item.getAttribute(resultMapExtractAttr));
+				});
+			view.setResult(columns+'');
+		})
+		
+	});
 	//拼接为sqlin
 	$("#op-sqlin").click(function(){
 		view.setResult('');
