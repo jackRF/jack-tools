@@ -79,7 +79,32 @@ $(document).ready(function(){
 		var data=view.getData().inputData;
 		view.setResult(data.toLowerCase());
 	});
-	
+	//列名转字段名
+	$("#op-columnToProperty").click(function(){
+		var data=view.getData().inputData;
+		if(!data){
+			return;
+		}
+		var columns=data.split(/[\s,]+/);
+		var result=[];
+		$.each(columns,function(i,column){
+			result.push(columnToProperty(column));
+		});
+		view.setResult(result.join('\n'));
+	});
+	//字段名转列名	
+	$("#op-propertyToColumn").click(function(){
+		var data=view.getData().inputData;
+		if(!data){
+			return;
+		}
+		var fields=data.split(/[\s,]+/);
+		var result=[];
+		$.each(fields,function(i,field){
+			result.push(propertyToColumn2(field));
+		});
+		view.setResult(result.join('\n'));
+	});
 	function fieldGettors(data){
 		var lines=data.split(/\n/g);
 		var result=[];
