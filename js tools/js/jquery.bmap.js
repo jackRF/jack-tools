@@ -44,6 +44,9 @@ function bSearch(array,item){
 }
 //查找指定范围
 function searchRange(array,start,end,item){
+	if(start==end){
+		return -end;
+	}
 	if(end-start==1){
 		return (item===array[start])?start+1:-(start+1);
 	}

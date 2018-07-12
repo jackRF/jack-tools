@@ -9,10 +9,32 @@ $(document).ready(function(){
 		setResult:function(result){
 			$("#datatxt2").val(result);
 		},
+		getModel:function(type){
+			return {
+				datatxt1:$.trim($("#datatxt1").val()),
+				datatxt2:$.trim($("#datatxt2").val()),
+			};
+		},
+		setModel:function(type,data){
+			if(!data){
+				data=type;
+				type=null;
+			}
+			$("#datatxt3").val(data);
+		},
 		on:function(action,fn){
+			var me=this;
 			this.actionsEl.find("[data-action='"+action+"']").on("click",function(){
-				fn();
+				var option=$(this).data().option;
+				if(option){
+					fn(me.actionOption(option));
+				}else{
+					fn();
+				}		
 			});
+		},
+		actionOption:function(type){
+			return this.actionsEl.find("[data-action-option='"+type+"']").val();
 		}
 	}
 	function doProcess(fn){
@@ -24,8 +46,28 @@ $(document).ready(function(){
 		fn(data,view);
 	}
 
-	view.on("resultMapExtract",function(){	//resultMap 提取 columns or property
-		var resultMapExtractAttr=window.resultMapExtractAttr||"column";
+	view.on("rmDup",function(){
+		var m=view.getModel();
+		if(!m.datatxt1){
+			return ;
+		}
+		if(!m.datatxt2){
+			view.setModel(m.datatxt1);
+			return
+		}
+		var a1=m.datatxt1.split(/\s*[\n,]+\s*/g);
+		var a2=m.datatxt2.split(/\s*[\n,]+\s*/g);
+		a2.sort();
+		var diff=[];
+		$.each(a1,function(i,item){
+			if(bSearch(a2,item)<=0){
+				diff.push(item);
+			}
+		});
+		view.setModel(diff);
+	});
+	view.on("resultMapExtract",function(option){	//resultMap 提取 columns or property
+		var resultMapExtractAttr=option||"column";
 		doProcess(function(data,view){
 			var domParser = new  DOMParser();
             var xmlDoc = domParser.parseFromString(data, 'text/xml');

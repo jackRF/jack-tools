@@ -16,6 +16,7 @@
 		<div>
 			<textarea id="datatxt1" style="width:800px;height:600px;" rowspan="100" colspan="600"></textarea>
 			<textarea id="datatxt2" style="width:800px;height:600px;" rowspan="100" colspan="600"></textarea>
+			
 		</div>	
 		<div id="toolActions">
 			<button data-action="sqlin"  />sql in</button>
@@ -24,11 +25,18 @@
 			<button data-action="fieldGettors"  />fieldGettors</button>
 			<button data-action="upperCase"  />大写</button>
 			<button data-action="lowerCase" />小写</button>
-			<button data-action="resultMapExtract" />从 resultMap 提取</button>
+			<button data-action="resultMapExtract" data-option="extractType" />从 resultMap 提取</button>
+			<select data-action-option="extractType">
+				<option value="column">column</option>
+				<option value="property">property</option>
+			</select>
 			<button data-action="columnToProperty"  />列名转字段名</button>
 			<button data-action="propertyToColumn" />字段名转列名</button>
 			<button data-action="luhn" />luhn算法</button>
 			<button data-action="validateCard" />验证银行卡</button>
+		</div>
+		<div>
+			<textarea id="datatxt3" style="width:1600px;height:300px;" rowspan="100" colspan="600"></textarea>
 		</div>
 	</body>
 </html>
