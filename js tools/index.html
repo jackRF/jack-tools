@@ -4,7 +4,8 @@
 		<meta charset="UTF-8"/>
 		<!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>-->
 		<title>js tools</title>
-		<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+		<!--<script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>-->
+		<script src="js/jquery-1.12.4.min.js"></script>
 		<script src="js/jquery.bmap.js"></script>
 		<script src="js/md5.js"></script>
 		<script src="js/model.utils.js"></script>
@@ -16,17 +17,18 @@
 			<textarea id="datatxt1" style="width:800px;height:600px;" rowspan="100" colspan="600"></textarea>
 			<textarea id="datatxt2" style="width:800px;height:600px;" rowspan="100" colspan="600"></textarea>
 		</div>	
-		<div>
-			<button id="op-sqlin"  />sql in</button>
-			<button id="op-rmDup"  />去重复</button>
-			<button id="op-fieldDescriptions"  />字段描述</button>
-			<button id="op-fieldGettors"  />fieldGettors</button>
-			<button id="op-upperCase"  />大写</button>
-			<button id="op-lowerCase"  />小写</button>
-			<button id="op-resultMapExtract"  />从 resultMap 提取</button>
-			<button id="op-columnToProperty"  />列名转字段名</button>
-			<button id="op-propertyToColumn"  />字段名转列名</button>
-			
+		<div id="toolActions">
+			<button data-action="sqlin"  />sql in</button>
+			<button data-action="rmDup" />去重复</button>
+			<button data-action="fieldDescriptions" />字段描述</button>
+			<button data-action="fieldGettors"  />fieldGettors</button>
+			<button data-action="upperCase"  />大写</button>
+			<button data-action="lowerCase" />小写</button>
+			<button data-action="resultMapExtract" />从 resultMap 提取</button>
+			<button data-action="columnToProperty"  />列名转字段名</button>
+			<button data-action="propertyToColumn" />字段名转列名</button>
+			<button data-action="luhn" />luhn算法</button>
+			<button data-action="validateCard" />验证银行卡</button>
 		</div>
 	</body>
 </html>

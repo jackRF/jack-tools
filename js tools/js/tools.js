@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	var view={
+		actionsEl:$("#toolActions"),
 		getData:function(){
 			return {
 				inputData:$.trim($("#datatxt1").val())			
@@ -7,6 +8,11 @@ $(document).ready(function(){
 		},
 		setResult:function(result){
 			$("#datatxt2").val(result);
+		},
+		on:function(action,fn){
+			this.actionsEl.find("[data-action='"+action+"']").on("click",function(){
+				fn();
+			});
 		}
 	}
 	function doProcess(fn){
@@ -17,8 +23,8 @@ $(document).ready(function(){
 		}
 		fn(data,view);
 	}
-	//resultMap 提取 columns or property
-	$("#op-resultMapExtract").click(function(){
+
+	view.on("resultMapExtract",function(){	//resultMap 提取 columns or property
 		var resultMapExtractAttr=window.resultMapExtractAttr||"column";
 		doProcess(function(data,view){
 			var domParser = new  DOMParser();
@@ -32,79 +38,75 @@ $(document).ready(function(){
 		})
 		
 	});
-	//拼接为sqlin
-	$("#op-sqlin").click(function(){
-		view.setResult('');
-		var data=view.getData().inputData;
-		if(!data){
-			return;
-		}
-		var items=data.split(/\s*\n\s*/g)
-		if(!items.length){
-			return;
-		}
-		view.setResult("'"+items.join("'\n,'")+"'");
+	
+	view.on("sqlin",function(){ //拼接为sqlin
+		doProcess(function(data,view){
+			var items=data.split(/\s*[\n,]+\s*/g)
+			if(!items.length){
+				return;
+			}
+			view.setResult("'"+items.join("'\n,'")+"'");
+		});	
 	});
-	//去重复
-	//获取java 字段描述
-	$("#op-fieldDescriptions").click(function(){
-		view.setResult('');
-		var data=view.getData().inputData;
-		if(!data){
-			return;
-		}
-		var fieldDescriptions=fieldDescription(data);
-		view.setResult('"'+fieldDescriptions.join('","')+'"');
-	});
-	//获取java get方法
-	$("#op-fieldGettors").click(function(){
-		view.setResult('');
-		var data=view.getData().inputData;
-		if(!data){
-			return;
-		}
-		var result=fieldGettors(data);
-		//eidtCell(d.getMaritalStatus(),row,3);
-		view.setResult(result.join(';\n'));
-	});
-	//大写
-	$("#op-upperCase").click(function(){
-		view.setResult('');
-		var data=view.getData().inputData;
-		view.setResult(data.toUpperCase());
-	});
-	//小写
-	$("#op-lowerCase").click(function(){
-		view.setResult('');
-		var data=view.getData().inputData;
-		view.setResult(data.toLowerCase());
-	});
-	//列名转字段名
-	$("#op-columnToProperty").click(function(){
-		var data=view.getData().inputData;
-		if(!data){
-			return;
-		}
-		var columns=data.split(/[\s,]+/);
-		var result=[];
-		$.each(columns,function(i,column){
-			result.push(columnToProperty(column));
+	
+	view.on("fieldDescriptions",function(){ //获取java 字段描述		
+		doProcess(function(data,view){
+			var fieldDescriptions=fieldDescription(data);
+			view.setResult('"'+fieldDescriptions.join('","')+'"');
 		});
-		view.setResult(result.join('\n'));
 	});
-	//字段名转列名	
-	$("#op-propertyToColumn").click(function(){
-		var data=view.getData().inputData;
-		if(!data){
-			return;
-		}
-		var fields=data.split(/[\s,]+/);
-		var result=[];
-		$.each(fields,function(i,field){
-			result.push(propertyToColumn2(field));
+	
+	view.on("fieldGettors",function(){ //获取java get方法
+		doProcess(function(data,view){
+			var result=fieldGettors(data);
+			view.setResult(result.join(';\n'));
 		});
-		view.setResult(result.join('\n'));
 	});
+	
+	view.on("upperCase",function(){ //大写
+		doProcess(function(data,view){
+			view.setResult(data.toUpperCase());
+		});
+	});
+	
+	view.on("lowerCase",function(){ //小写
+		doProcess(function(data,view){
+			view.setResult(data.toLowerCase());
+		});
+	});
+	
+	view.on("columnToProperty",function(){//列名转字段名
+		doProcess(function(data,view){
+			var columns=data.split(/[\s,]+/);
+			var result=[];
+			$.each(columns,function(i,column){
+				result.push(columnToProperty(column));
+			});
+			view.setResult(result.join('\n'));
+		});
+	});
+	
+	view.on("propertyToColumn",function(){ //字段名转列名
+		doProcess(function(data,view){
+			var fields=data.split(/[\s,]+/);
+			var result=[];
+			$.each(fields,function(i,field){
+				result.push(propertyToColumn2(field));
+			});
+			view.setResult(result.join('\n'));
+		});
+	});
+	view.on("luhn",function(){//luhn算法
+		doProcess(function(data,view){
+			view.setResult(luhn(data));
+		});
+	});
+	view.on("validateCard",function(){ //验证银行卡
+		doProcess(function(data,view){
+			view.setResult(verifyBankCard(data));
+		});
+	});
+	
 	function fieldGettors(data){
 		var lines=data.split(/\n/g);
 		var result=[];
@@ -123,7 +125,7 @@ $(document).ready(function(){
 		var lines=data.split(/\n/g);
 		var fieldDescriptions=[];
 		$.each(lines,function(i,item){
-			var match=item.match(/\/\/(.*)$/);
+			var match=item.match(/\s+\*\s+(.*)$/);
 			if(match&&match.length){
 				fieldDescriptions.push(match[1]);
 			}
@@ -133,7 +135,7 @@ $(document).ready(function(){
 	
 	
 })
-//验证银行卡
+
 function verifyBankCard(bankCardNo){
 	if(!bankCardNo||bankCardNo.length<8){
 		return false;
