@@ -46,7 +46,7 @@ $(document).ready(function(){
 		fn(data,view);
 	}
 
-	view.on("rmDup",function(){
+	view.on("rmDup",function(){//去重复
 		var m=view.getModel();
 		if(!m.datatxt1){
 			return ;
@@ -146,6 +146,18 @@ $(document).ready(function(){
 	view.on("validateCard",function(){ //验证银行卡
 		doProcess(function(data,view){
 			view.setResult(verifyBankCard(data));
+		});
+	});
+	view.on("generateResultMap",function(){//生成ResultMap
+		doProcess(function(data,view){
+			var columns=data.split(/\s*[\n,]+\s*/g);
+			var lines=[];
+			lines.push('<resultMap id="" type="">');
+			$.each(columns,function(i,item){
+				lines.push('\t<result property="'+columnToProperty(item)+'" column="'+item+'" />');
+			});
+			lines.push('</resultMap>');
+			view.setResult(lines.join('\n'));
 		});
 	});
 	
