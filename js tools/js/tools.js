@@ -45,7 +45,34 @@ $(document).ready(function(){
 		}
 		fn(data,view);
 	}
-
+	view.on('intersection',function(){// 交集
+		var m=view.getModel();
+		if(!m.datatxt1||!m.datatxt2){
+			view.setModel('')
+			return ;
+		}
+		var a1=m.datatxt1.split(/\s*[\n,]+\s*/g);
+		var a2=m.datatxt2.split(/\s*[\n,]+\s*/g);
+		var testRepetition;
+		var base;
+		if(a2.length>a1.length){
+			a2.sort();
+			base=a2;
+			testRepetition=a1;
+		}else{
+			a1.sort();
+			base=a1;
+			testRepetition=a2;
+		}
+		
+		var repetition=[];
+		$.each(testRepetition,function(i,item){
+			if(bSearch(base,item)>0){
+				repetition.push(item);
+			}
+		});
+		view.setModel(repetition);
+	})
 	view.on("rmDup",function(){//去重复
 		var m=view.getModel();
 		if(!m.datatxt1){
