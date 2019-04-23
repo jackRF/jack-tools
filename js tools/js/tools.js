@@ -13,6 +13,7 @@ $(document).ready(function(){
 			return {
 				datatxt1:$.trim($("#datatxt1").val()),
 				datatxt2:$.trim($("#datatxt2").val()),
+				datatxt3:$.trim($("#datatxt3").val()),
 			};
 		},
 		setModel:function(type,data){
@@ -45,6 +46,26 @@ $(document).ready(function(){
 		}
 		fn(data,view);
 	}
+	view.on("templateString",function(){
+		var m=view.getModel();
+		if(!m.datatxt1||!m.datatxt3){
+			view.setResult('')
+			return ;
+		}
+		var format=m.datatxt3
+		var lines=m.datatxt1.split(/\s*[\n]+\s*/g);
+		
+		var ra=[];
+		$.each(lines,function(i,line){
+			var a1=line.split(/\s*[\s,]+\s*/g);
+			var temp=format.replace(/\{\{:(\d+)}\}/g,function(g1,g2){
+				return a1[g2/1];
+			});
+			ra.push(temp);
+		});
+		view.setResult(ra.join('\n'))
+		
+	});
 	view.on('intersection',function(){// 交集
 		var m=view.getModel();
 		if(!m.datatxt1||!m.datatxt2){
