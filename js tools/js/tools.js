@@ -52,19 +52,17 @@ $(document).ready(function(){
 			view.setResult('')
 			return ;
 		}
-		var format=m.datatxt3
+		var templateStr=m.datatxt3
 		var lines=m.datatxt1.split(/\s*[\n]+\s*/g);
-		
-		var ra=[];
+		var data=[];
+		var reg=/\s*[\s,]+\s*/g;
 		$.each(lines,function(i,line){
-			var a1=line.split(/\s*[\s,]+\s*/g);
-			var temp=format.replace(/\{\{:(\d+)}\}/g,function(g1,g2){
-				return a1[g2/1];
-			});
-			ra.push(temp);
+			line=$.trim(line);
+			if(line){
+				data.push(line.split(reg));
+			}
 		});
-		view.setResult(ra.join('\n'))
-		
+		view.setResult($.templates(templateStr).render(data));
 	});
 	view.on('intersection',function(){// 交集
 		var m=view.getModel();
