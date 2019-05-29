@@ -11,9 +11,9 @@ $(document).ready(function(){
 		},
 		getModel:function(type){
 			return {
-				datatxt1:$.trim($("#datatxt1").val()),
-				datatxt2:$.trim($("#datatxt2").val()),
-				datatxt3:$.trim($("#datatxt3").val()),
+				datatxt1:$("#datatxt1").val(),
+				datatxt2:$("#datatxt2").val(),
+				datatxt3:$("#datatxt3").val(),
 			};
 		},
 		setModel:function(type,data){
