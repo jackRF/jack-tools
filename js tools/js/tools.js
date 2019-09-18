@@ -36,6 +36,25 @@ $(document).ready(function(){
 		},
 		actionOption:function(type){
 			return this.actionsEl.find("[data-action-option='"+type+"']").val();
+		},
+		customerModel(input,dataMode){
+			dataMode=dataMode||this.actionOption('dataMode');
+			if(!dataMode||dataMode==='text'){
+				return input;
+			}
+			var lines=input.split(/\s*[\n]+\s*/g);
+			if(dataMode==='line'){
+				return lines; 
+			}
+			var data=[];
+			var reg=/\s*[\s,]+\s*/g;
+			$.each(lines,function(i,line){
+				line=$.trim(line);
+				if(line){
+					data.push(line.split(reg));
+				}
+			});
+			return data;
 		}
 	}
 	function doProcess(fn){
@@ -46,23 +65,15 @@ $(document).ready(function(){
 		}
 		fn(data,view);
 	}
-	view.on("templateString",function(){
+	view.on("templateString",function(){//模板字符串
 		var m=view.getModel();
 		if(!m.datatxt1||!m.datatxt3){
 			view.setResult('')
 			return ;
 		}
 		var templateStr=m.datatxt3
-		var lines=m.datatxt1.split(/\s*[\n]+\s*/g);
-		var data=[];
-		var reg=/\s*[\s,]+\s*/g;
-		$.each(lines,function(i,line){
-			line=$.trim(line);
-			if(line){
-				data.push(line.split(reg));
-			}
-		});
-		view.setResult($.templates(templateStr).render(data));
+		var model=view.customerModel(m.datatxt1);
+		view.setResult($.templates(templateStr).render(model));
 	});
 	view.on('intersection',function(){// 交集
 		var m=view.getModel();

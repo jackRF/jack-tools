@@ -1,0 +1,12 @@
+body{
+	margin:0;
+	padding:1% 2.5% ;
+	text-align:center;
+}
+.comments {
+width:48%;
+height:100%;
+overflow:auto;
+word-break:break-all;
+
+}
