@@ -163,13 +163,57 @@ $(document).ready(function(){
 	});
 	
 	view.on("upperCase",function(){ //大写
+		var caseMode=view.actionOption('caseMode');
 		doProcess(function(data,view){
+			if(caseMode=='first'){
+				var dataMode=view.actionOption('dataMode');
+				var data=view.customerModel(data,dataMode);
+				var lines=[];
+				for(var line of data){
+					if(!line){
+						console;
+					}
+					if(line instanceof Array){
+						var list=[];
+						for(var item of line){
+							list.push(item.charAt(0).toUpperCase()+item.substring(1));
+						}
+						lines.push(list);
+					}else{
+						lines.push(line.charAt(0).toUpperCase()+line.substring(1));
+					}
+				}
+				view.setResult(lines.join('\n'));
+				return;
+			}
 			view.setResult(data.toUpperCase());
 		});
 	});
 	
 	view.on("lowerCase",function(){ //小写
+		var caseMode=view.actionOption('caseMode');
 		doProcess(function(data,view){
+			if(caseMode=='first'){
+				var dataMode=view.actionOption('dataMode');
+				var data=view.customerModel(data,dataMode);
+				var lines=[];
+				for(var line of data){
+					if(!line){
+						console;
+					}
+					if(line instanceof Array){
+						var list=[];
+						for(var item of line){
+							list.push(item.charAt(0).toLowerCase()+item.substring(1));
+						}
+						lines.push(list);
+					}else{
+						lines.push(line.charAt(0).toLowerCase()+line.substring(1));
+					}
+				}
+				view.setResult(lines.join('\n'));
+				return;
+			}
 			view.setResult(data.toLowerCase());
 		});
 	});
