@@ -29,11 +29,32 @@ function parseJavaField(text) {
             if (!useLine) {
                 continue;
             }
+            
             if (!useLine.endsWith(";")) {
-                lastComment = [];
-                continue;
+                var i=useLine.indexOf(";")
+                var skip=true;
+                if(i>=0){
+                    skip=false;
+                    var lcomment=useLine.substring(i+1).trim();
+                    if(!lcomment.startsWith("//")){
+                        skip=true;
+                    }else{
+                        if(!lastComment.length){
+                            lcomment=trimBegin(lcomment,'/');
+                            if(lcomment.trim()){
+                                lastComment.push(lcomment.trim());
+                            }
+                        }
+                        useLine=useLine.substring(0,i);
+                    }
+                }
+                if(skip){
+                    lastComment = [];
+                    continue;
+                }
+            }else{
+                useLine = useLine.substring(0, useLine.length - 1);
             }
-            useLine = useLine.substring(0, useLine.length - 1);
             var def = useLine.split(/\s+/);
             var ln = def.length;
             var type = def[ln - 2]
