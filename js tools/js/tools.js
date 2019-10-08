@@ -73,7 +73,19 @@ $(document).ready(function(){
 		}
 		var templateStr=m.datatxt3
 		var model=view.customerModel(m.datatxt1);
-		view.setResult($.templates(templateStr).render(model));
+		view.setResult($.templates(templateStr).render(model,{
+			getter:function(name,type){
+				var use=name.charAt(0).toUpperCase()+name.substring(1);
+				if(type=='boolean'){
+					return "is"+use;
+				}
+				return 'get'+use;
+			},
+			setter:function(name){
+				var use=name.charAt(0).toUpperCase()+name.substring(1);
+				return 'set'+use;
+			}
+		}));
 	});
 	view.on('intersection',function(){// 交集
 		var m=view.getModel();
@@ -148,18 +160,28 @@ $(document).ready(function(){
 		});	
 	});
 	
-	view.on("fieldDescriptions",function(){ //获取java 字段描述		
-		doProcess(function(data,view){
-			var fieldDescriptions=fieldDescription(data);
-			view.setResult('"'+fieldDescriptions.join('","')+'"');
-		});
-	});
-	
-	view.on("fieldGettors",function(){ //获取java get方法
-		doProcess(function(data,view){
-			var result=fieldGettors(data);
-			view.setResult(result.join(';\n'));
-		});
+	view.on("fieldInfo",function(){ //获取java 字段信息	
+		var m=view.getModel();
+		if(!m.datatxt1||!m.datatxt3){
+			view.setResult('')
+			return ;
+		}
+		var templateStr=m.datatxt3
+		var model=parseJavaField(m.datatxt1).values();
+		model=[...model];
+		view.setResult($.templates(templateStr).render(model,{
+			getter:function(name,type){
+				var use=name.charAt(0).toUpperCase()+name.substring(1);
+				if(type=='boolean'){
+					return "is"+use;
+				}
+				return 'get'+use;
+			},
+			setter:function(name){
+				var use=name.charAt(0).toUpperCase()+name.substring(1);
+				return 'set'+use;
+			}
+		}));
 	});
 	
 	view.on("upperCase",function(){ //大写
@@ -261,34 +283,6 @@ $(document).ready(function(){
 			view.setResult(lines.join('\n'));
 		});
 	});
-	
-	function fieldGettors(data){
-		var lines=data.split(/\n/g);
-		var result=[];
-		$.each(lines,function(i,item){
-			var match=item.match(/\s(\w*);/);
-			if(match&&match.length){
-				result.push(processGettor(match[1]));
-			}
-		});
-		return result;
-	}
-	function processGettor(fieldName){
-		return "get"+fieldName.charAt(0).toUpperCase()+fieldName.substring(1);
-	}
-	function fieldDescription(data){
-		var lines=data.split(/\n/g);
-		var fieldDescriptions=[];
-		$.each(lines,function(i,item){
-			var match=item.match(/\s+\*\s+(.*)$/);
-			if(match&&match.length){
-				fieldDescriptions.push(match[1]);
-			}
-		});
-		return fieldDescriptions;
-	}
-	
-	
 })
 
 function verifyBankCard(bankCardNo){
